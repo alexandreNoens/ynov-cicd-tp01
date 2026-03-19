@@ -1,7 +1,10 @@
 import sqlite3
 
 from app.db import get_connection
-from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFoundError
+from app.exceptions.student import (
+    StudentEmailAlreadyExistsError,
+    StudentNotFoundError,
+)
 from app.models.student import Student, StudentCreate
 
 
@@ -172,6 +175,8 @@ def search_students(query: str) -> list[Student]:
 
     with get_connection() as connection:
         connection.row_factory = sqlite3.Row
-        rows = connection.execute(search_query, (like_term, like_term)).fetchall()
+        rows = connection.execute(
+            search_query, (like_term, like_term)
+        ).fetchall()
 
     return [Student(**dict(row)) for row in rows]

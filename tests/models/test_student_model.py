@@ -68,7 +68,9 @@ def test_grade_out_of_range_raises_error(grade: float) -> None:
         Student(**student_payload(grade=grade))
 
 
-@pytest.mark.parametrize("field", ["informatique", "mathématiques", "physique", "chimie"])
+@pytest.mark.parametrize(
+    "field", ["informatique", "mathématiques", "physique", "chimie"]
+)
 def test_field_valid_values(field: str) -> None:
     student = Student(**student_payload(field=field))
     assert student.field == field

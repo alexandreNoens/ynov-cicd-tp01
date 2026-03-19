@@ -3,7 +3,9 @@ from collections.abc import Callable
 from fastapi.testclient import TestClient
 
 
-def test_get_students_returns_json_array_with_status_200(client: TestClient) -> None:
+def test_get_students_returns_json_array_with_status_200(
+    client: TestClient,
+) -> None:
     response = client.get("/students")
 
     assert response.status_code == 200
@@ -65,21 +67,27 @@ def test_get_students_search_returns_200_with_case_insensitive_matches(
     assert payload[0]["firstName"] == "Hermione"
 
 
-def test_get_students_search_returns_400_when_q_is_missing(client: TestClient) -> None:
+def test_get_students_search_returns_400_when_q_is_missing(
+    client: TestClient,
+) -> None:
     response = client.get("/students/search")
 
     assert response.status_code == 400
     assert response.json() == {"detail": "query parameter q is required"}
 
 
-def test_get_students_search_returns_400_when_q_is_empty(client: TestClient) -> None:
+def test_get_students_search_returns_400_when_q_is_empty(
+    client: TestClient,
+) -> None:
     response = client.get("/students/search?q=   ")
 
     assert response.status_code == 400
     assert response.json() == {"detail": "query parameter q is required"}
 
 
-def test_get_students_stats_returns_200_and_expected_stats(client: TestClient) -> None:
+def test_get_students_stats_returns_200_and_expected_stats(
+    client: TestClient,
+) -> None:
     response = client.get("/students/stats")
 
     assert response.status_code == 200
@@ -107,7 +115,9 @@ def test_get_student_returns_json_object_with_status_200_when_found(
     assert payload["firstName"] == "Harry"
 
 
-def test_get_student_returns_404_when_id_does_not_exist(client: TestClient) -> None:
+def test_get_student_returns_404_when_id_does_not_exist(
+    client: TestClient,
+) -> None:
     response = client.get("/students/999")
 
     assert response.status_code == 404
@@ -151,7 +161,9 @@ def test_post_student_returns_400_when_first_name_is_too_short(
     client: TestClient,
     student_payload_factory: Callable[..., dict[str, object]],
 ) -> None:
-    response = client.post("/students", json=student_payload_factory(firstName="N"))
+    response = client.post(
+        "/students", json=student_payload_factory(firstName="N")
+    )
 
     assert response.status_code == 400
 
@@ -160,7 +172,9 @@ def test_post_student_returns_400_when_last_name_is_too_short(
     client: TestClient,
     student_payload_factory: Callable[..., dict[str, object]],
 ) -> None:
-    response = client.post("/students", json=student_payload_factory(lastName="L"))
+    response = client.post(
+        "/students", json=student_payload_factory(lastName="L")
+    )
 
     assert response.status_code == 400
 
@@ -257,7 +271,9 @@ def test_put_student_returns_400_when_id_is_not_a_valid_number(
     client: TestClient,
     student_payload_factory: Callable[..., dict[str, object]],
 ) -> None:
-    response = client.put("/students/not-a-number", json=student_payload_factory())
+    response = client.put(
+        "/students/not-a-number", json=student_payload_factory()
+    )
 
     assert response.status_code == 400
     assert response.json() == {"detail": "student id must be a valid number"}

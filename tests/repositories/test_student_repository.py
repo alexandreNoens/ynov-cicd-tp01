@@ -2,7 +2,10 @@ from collections.abc import Callable
 
 import pytest
 
-from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFoundError
+from app.exceptions.student import (
+    StudentEmailAlreadyExistsError,
+    StudentNotFoundError,
+)
 from app.models.student import Student, StudentCreate
 from app.repositories.student import (
     create_student,

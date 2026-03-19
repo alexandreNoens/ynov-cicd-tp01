@@ -4,7 +4,10 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import ValidationError
 
-from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFoundError
+from app.exceptions.student import (
+    StudentEmailAlreadyExistsError,
+    StudentNotFoundError,
+)
 from app.models.student import Student, StudentCreate
 from app.repositories.student import (
     create_student,
@@ -27,7 +30,9 @@ def get_students() -> list[Student]:
 @router.get("/students/search", response_model=list[Student])
 def get_students_search(q: str | None = Query(default=None)) -> list[Student]:
     if q is None or not q.strip():
-        raise HTTPException(status_code=400, detail="query parameter q is required")
+        raise HTTPException(
+            status_code=400, detail="query parameter q is required"
+        )
 
     return search_students(q)
 
@@ -37,7 +42,9 @@ def post_student(payload: dict[str, Any]) -> Student:
     try:
         student_to_create = StudentCreate(**payload)
     except ValidationError as exc:
-        raise HTTPException(status_code=400, detail=json.loads(exc.json())) from exc
+        raise HTTPException(
+            status_code=400, detail=json.loads(exc.json())
+        ) from exc
 
     try:
         return create_student(student_to_create)
@@ -61,12 +68,16 @@ def put_student(student_id: str, payload: dict[str, Any]) -> Student:
     try:
         student_to_update = StudentCreate(**payload)
     except ValidationError as exc:
-        raise HTTPException(status_code=400, detail=json.loads(exc.json())) from exc
+        raise HTTPException(
+            status_code=400, detail=json.loads(exc.json())
+        ) from exc
 
     try:
         return update_student(parsed_student_id, student_to_update)
     except StudentNotFoundError as exc:
-        raise HTTPException(status_code=404, detail="student not found") from exc
+        raise HTTPException(
+            status_code=404, detail="student not found"
+        ) from exc
     except StudentEmailAlreadyExistsError as exc:
         raise HTTPException(
             status_code=409,
@@ -109,6 +120,8 @@ def delete_student_by_id(student_id: str) -> dict[str, str]:
     try:
         delete_student(parsed_student_id)
     except StudentNotFoundError as exc:
-        raise HTTPException(status_code=404, detail="student not found") from exc
+        raise HTTPException(
+            status_code=404, detail="student not found"
+        ) from exc
 
     return {"message": "student deleted"}
