@@ -5,17 +5,17 @@ Créez une API REST, écrivez des tests, configurez un linter et mettez en place
 ## Prérequis
 
 - Python 3.11+
-- `uv`
+- uv
 
-## Étapes
+## Démarrage
 
-### 1) Installation du projet
+### 1) Installer le projet
 
 ```bash
 make install
 ```
 
-Crée l'environnement virtuel si besoin, génère le lock des dépendances avec hashes, puis installe les dépendances.
+Crée l'environnement virtuel si besoin, génère le lock des dépendances avec hashes et installe les dépendances.
 
 ### 2) Initialiser la base de données (reset)
 
@@ -33,22 +33,25 @@ make serve
 
 Lance l'API FastAPI en local avec rechargement automatique.
 
-Swagger UI : http://127.0.0.1:8000/docs
+## Documentation API
 
-ReDoc : http://127.0.0.1:8000/redoc
+- Swagger UI : http://127.0.0.1:8000/docs
+- ReDoc : http://127.0.0.1:8000/redoc
 
-### 4) Lancer les tests
+## Qualité
+
+### Lancer les tests
 
 ```bash
 make check
 ```
 
-Exécute les tests avec `pytest`.
+Exécute les tests avec pytest.
 
-### 5) Lancer le linter
+### Lancer le linter
 
 ```bash
 make lint
 ```
 
-Exécute le lint avec `ruff`.
+Exécute le lint avec ruff.
