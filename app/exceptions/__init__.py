@@ -1,3 +1,3 @@
-from app.exceptions.student import StudentEmailAlreadyExistsError
+from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFoundError
 
-__all__ = ["StudentEmailAlreadyExistsError"]
+__all__ = ["StudentEmailAlreadyExistsError", "StudentNotFoundError"]

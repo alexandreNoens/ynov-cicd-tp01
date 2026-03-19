@@ -1,7 +1,7 @@
 import sqlite3
 
 from app.db import get_connection
-from app.exceptions.student import StudentEmailAlreadyExistsError
+from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFoundError
 from app.models.student import Student, StudentCreate
 
 
@@ -62,3 +62,36 @@ def create_student(student: StudentCreate) -> Student:
         raise RuntimeError("created student could not be retrieved")
 
     return created_student
+
+
+def update_student(student_id: int, student: StudentCreate) -> Student:
+    query = """
+    UPDATE students
+    SET firstName = ?, lastName = ?, email = ?, grade = ?, field = ?
+    WHERE id = ?
+    """
+    try:
+        with get_connection() as connection:
+            cursor = connection.execute(
+                query,
+                (
+                    student.firstName,
+                    student.lastName,
+                    student.email,
+                    student.grade,
+                    student.field,
+                    student_id,
+                ),
+            )
+            if cursor.rowcount == 0:
+                raise StudentNotFoundError()
+    except sqlite3.IntegrityError as exc:
+        if "students.email" in str(exc):
+            raise StudentEmailAlreadyExistsError() from exc
+        raise
+
+    updated_student = get_student_by_id(student_id)
+    if updated_student is None:
+        raise RuntimeError("updated student could not be retrieved")
+
+    return updated_student

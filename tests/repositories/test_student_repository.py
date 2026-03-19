@@ -2,12 +2,13 @@ from collections.abc import Callable
 
 import pytest
 
-from app.exceptions.student import StudentEmailAlreadyExistsError
+from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFoundError
 from app.models.student import Student, StudentCreate
 from app.repositories.student import (
     create_student,
     get_student_by_id,
     list_students,
+    update_student,
 )
 
 
@@ -59,4 +60,42 @@ def test_create_student_raises_error_when_email_already_exists(
                 grade=18,
                 field="informatique",
             )
+        )
+
+
+def test_update_student_returns_updated_student_when_found(
+    student_create_factory: Callable[..., StudentCreate],
+) -> None:
+    updated_student = update_student(
+        1,
+        student_create_factory(
+            firstName="Harry",
+            lastName="Potter",
+            email="harry.j.potter@hogwarts.edu",
+            grade=18.5,
+            field="physique",
+        ),
+    )
+
+    assert isinstance(updated_student, Student)
+    assert updated_student.id == 1
+    assert updated_student.email == "harry.j.potter@hogwarts.edu"
+    assert updated_student.grade == 18.5
+    assert updated_student.field == "physique"
+
+
+def test_update_student_raises_not_found_when_student_does_not_exist(
+    student_create_factory: Callable[..., StudentCreate],
+) -> None:
+    with pytest.raises(StudentNotFoundError):
+        update_student(999, student_create_factory())
+
+
+def test_update_student_raises_email_conflict_when_email_belongs_to_another(
+    student_create_factory: Callable[..., StudentCreate],
+) -> None:
+    with pytest.raises(StudentEmailAlreadyExistsError):
+        update_student(
+            1,
+            student_create_factory(email="hermione.granger@hogwarts.edu"),
         )
