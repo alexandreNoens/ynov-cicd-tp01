@@ -1,3 +1,3 @@
-from app.models.student import Student
+from app.models.student import Student, StudentCreate
 
-__all__ = ["Student"]
+__all__ = ["Student", "StudentCreate"]

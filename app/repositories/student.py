@@ -1,7 +1,8 @@
 import sqlite3
 
 from app.db import get_connection
-from app.models.student import Student
+from app.exceptions.student import StudentEmailAlreadyExistsError
+from app.models.student import Student, StudentCreate
 
 
 def list_students() -> list[Student]:
@@ -31,3 +32,33 @@ def get_student_by_id(student_id: int) -> Student | None:
         return None
 
     return Student(**dict(row))
+
+
+def create_student(student: StudentCreate) -> Student:
+    query = """
+    INSERT INTO students (firstName, lastName, email, grade, field)
+    VALUES (?, ?, ?, ?, ?)
+    """
+    try:
+        with get_connection() as connection:
+            cursor = connection.execute(
+                query,
+                (
+                    student.firstName,
+                    student.lastName,
+                    student.email,
+                    student.grade,
+                    student.field,
+                ),
+            )
+            created_student_id = cursor.lastrowid
+    except sqlite3.IntegrityError as exc:
+        if "students.email" in str(exc):
+            raise StudentEmailAlreadyExistsError() from exc
+        raise
+
+    created_student = get_student_by_id(created_student_id)
+    if created_student is None:
+        raise RuntimeError("created student could not be retrieved")
+
+    return created_student

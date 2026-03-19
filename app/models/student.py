@@ -4,8 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, field_validator
 
 
-class Student(BaseModel):
-    id: int | None = None
+class StudentCreate(BaseModel):
     firstName: str = Field(min_length=2)
     lastName: str = Field(min_length=2)
     email: str
@@ -18,3 +17,7 @@ class Student(BaseModel):
         if not re.fullmatch(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", value):
             raise ValueError("Email invalide")
         return value
+
+
+class Student(StudentCreate):
+    id: int | None = None

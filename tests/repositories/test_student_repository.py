@@ -1,11 +1,17 @@
-from app.db import reset_db
-from app.models.student import Student
-from app.repositories.student import get_student_by_id, list_students
+from collections.abc import Callable
+
+import pytest
+
+from app.exceptions.student import StudentEmailAlreadyExistsError
+from app.models.student import Student, StudentCreate
+from app.repositories.student import (
+    create_student,
+    get_student_by_id,
+    list_students,
+)
 
 
 def test_list_students_returns_students_ordered_by_id() -> None:
-    reset_db()
-
     students = list_students()
 
     assert isinstance(students, list)
@@ -17,8 +23,6 @@ def test_list_students_returns_students_ordered_by_id() -> None:
 
 
 def test_get_student_by_id_returns_student_when_found() -> None:
-    reset_db()
-
     student = get_student_by_id(1)
 
     assert isinstance(student, Student)
@@ -27,8 +31,32 @@ def test_get_student_by_id_returns_student_when_found() -> None:
 
 
 def test_get_student_by_id_returns_none_when_missing() -> None:
-    reset_db()
-
     student = get_student_by_id(999)
 
     assert student is None
+
+
+def test_create_student_returns_created_student_with_generated_id(
+    student_create_factory: Callable[..., StudentCreate],
+) -> None:
+    created_student = create_student(student_create_factory())
+
+    assert isinstance(created_student, Student)
+    assert created_student.id == 6
+    assert created_student.firstName == "Neville"
+    assert created_student.email == "neville.longbottom@hogwarts.edu"
+
+
+def test_create_student_raises_error_when_email_already_exists(
+    student_create_factory: Callable[..., StudentCreate],
+) -> None:
+    with pytest.raises(StudentEmailAlreadyExistsError):
+        create_student(
+            student_create_factory(
+                firstName="Harry",
+                lastName="Potter",
+                email="harry.potter@hogwarts.edu",
+                grade=18,
+                field="informatique",
+            )
+        )
