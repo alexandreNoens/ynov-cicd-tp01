@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import ValidationError
@@ -26,8 +26,17 @@ router = APIRouter(tags=["students"])
 def get_students(
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=10, ge=1),
+    sort: Literal[
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "grade",
+        "field",
+    ] = "id",
+    order: Literal["asc", "desc"] = "asc",
 ) -> list[Student]:
-    return list_students(page=page, limit=limit)
+    return list_students(page=page, limit=limit, sort=sort, order=order)
 
 
 @router.get("/students/search", response_model=list[Student])

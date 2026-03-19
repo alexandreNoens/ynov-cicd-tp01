@@ -7,15 +7,33 @@ from app.exceptions.student import (
 )
 from app.models.student import Student, StudentCreate
 
+SORT_COLUMNS = {
+    "id": "id",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "email": "email",
+    "grade": "grade",
+    "field": "field",
+}
 
-def list_students(page: int = 1, limit: int = 10) -> list[Student]:
+SORT_ORDERS = {"asc": "ASC", "desc": "DESC"}
+
+
+def list_students(
+    page: int = 1,
+    limit: int = 10,
+    sort: str = "id",
+    order: str = "asc",
+) -> list[Student]:
     offset = (page - 1) * limit
+    sort_column = SORT_COLUMNS[sort]
+    sort_order = SORT_ORDERS[order]
     query = """
     SELECT id, firstName, lastName, email, grade, field
     FROM students
-    ORDER BY id ASC
+    ORDER BY {sort_column} {sort_order}, id ASC
     LIMIT ? OFFSET ?
-    """
+    """.format(sort_column=sort_column, sort_order=sort_order)
     with get_connection() as connection:
         connection.row_factory = sqlite3.Row
         rows = connection.execute(query, (limit, offset)).fetchall()

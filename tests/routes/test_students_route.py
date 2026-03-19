@@ -79,6 +79,22 @@ def test_get_students_pagination_returns_second_page(
     assert payload[1]["id"] == 4
 
 
+def test_get_students_sort_by_grade_desc_returns_expected_order(
+    client: TestClient,
+) -> None:
+    response = client.get("/students?sort=grade&order=desc")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert [student["firstName"] for student in payload] == [
+        "Hermione",
+        "Harry",
+        "Luna",
+        "Ron",
+        "Draco",
+    ]
+
+
 def test_get_students_search_returns_200_with_case_insensitive_matches(
     client: TestClient,
 ) -> None:
