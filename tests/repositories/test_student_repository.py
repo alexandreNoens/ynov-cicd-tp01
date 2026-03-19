@@ -10,6 +10,7 @@ from app.repositories.student import (
     get_student_by_id,
     get_students_stats,
     list_students,
+    search_students,
     update_student,
 )
 
@@ -131,3 +132,16 @@ def test_get_students_stats_returns_expected_aggregates() -> None:
     assert isinstance(best_student, Student)
     assert best_student.firstName == "Hermione"
     assert best_student.grade == 19.8
+
+
+def test_search_students_returns_case_insensitive_matches() -> None:
+    students = search_students("grAn")
+
+    assert len(students) == 1
+    assert students[0].firstName == "Hermione"
+
+
+def test_search_students_returns_empty_list_when_no_match() -> None:
+    students = search_students("xyz")
+
+    assert students == []

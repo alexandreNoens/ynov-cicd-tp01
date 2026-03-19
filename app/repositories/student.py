@@ -158,3 +158,20 @@ def get_students_stats() -> dict[str, object]:
         "studentsByField": students_by_field,
         "bestStudent": best_student,
     }
+
+
+def search_students(query: str) -> list[Student]:
+    normalized_query = query.strip().lower()
+    like_term = f"%{normalized_query}%"
+    search_query = """
+    SELECT id, firstName, lastName, email, grade, field
+    FROM students
+    WHERE LOWER(firstName) LIKE ? OR LOWER(lastName) LIKE ?
+    ORDER BY id ASC
+    """
+
+    with get_connection() as connection:
+        connection.row_factory = sqlite3.Row
+        rows = connection.execute(search_query, (like_term, like_term)).fetchall()
+
+    return [Student(**dict(row)) for row in rows]

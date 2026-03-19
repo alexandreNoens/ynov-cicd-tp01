@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import ValidationError
 
 from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFoundError
@@ -12,6 +12,7 @@ from app.repositories.student import (
     get_student_by_id,
     get_students_stats,
     list_students,
+    search_students,
     update_student,
 )
 
@@ -21,6 +22,14 @@ router = APIRouter(tags=["students"])
 @router.get("/students", response_model=list[Student])
 def get_students() -> list[Student]:
     return list_students()
+
+
+@router.get("/students/search", response_model=list[Student])
+def get_students_search(q: str | None = Query(default=None)) -> list[Student]:
+    if q is None or not q.strip():
+        raise HTTPException(status_code=400, detail="query parameter q is required")
+
+    return search_students(q)
 
 
 @router.post("/students", response_model=Student, status_code=201)

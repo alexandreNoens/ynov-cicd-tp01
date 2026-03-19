@@ -13,6 +13,32 @@ def test_get_students_returns_json_array_with_status_200(client: TestClient) -> 
     assert payload[0]["firstName"] == "Harry"
 
 
+def test_get_students_search_returns_200_with_case_insensitive_matches(
+    client: TestClient,
+) -> None:
+    response = client.get("/students/search?q=grAn")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert isinstance(payload, list)
+    assert len(payload) == 1
+    assert payload[0]["firstName"] == "Hermione"
+
+
+def test_get_students_search_returns_400_when_q_is_missing(client: TestClient) -> None:
+    response = client.get("/students/search")
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "query parameter q is required"}
+
+
+def test_get_students_search_returns_400_when_q_is_empty(client: TestClient) -> None:
+    response = client.get("/students/search?q=   ")
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "query parameter q is required"}
+
+
 def test_get_students_stats_returns_200_and_expected_stats(client: TestClient) -> None:
     response = client.get("/students/stats")
 
