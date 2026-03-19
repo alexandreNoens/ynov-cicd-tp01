@@ -1,5 +1,7 @@
 # API REST + Pipeline CI/CD
 
+[![CI](https://github.com/alexandreNoens/ynov-cicd-tp01/actions/workflows/ci.yml/badge.svg)](https://github.com/alexandreNoens/ynov-cicd-tp01/actions/workflows/ci.yml)
+
 Créez une API REST, écrivez des tests, configurez un linter et mettez en place un pipeline d'intégration continue.
 
 ## Prérequis
