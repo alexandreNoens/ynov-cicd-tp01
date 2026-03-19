@@ -1,4 +1,4 @@
-.PHONY: install serve check lint clean
+.PHONY: install install-db serve check lint format clean
 
 VENV ?= .venv
 PYTHON ?= $(VENV)/bin/python
@@ -16,6 +16,10 @@ install:
 	@if [ ! -d $(VENV) ]; then uv venv $(VENV); fi
 	uv pip compile $(REQ_IN) --generate-hashes -o $(REQ_LOCK)
 	uv pip install --python $(PYTHON) -r $(REQ_LOCK)
+
+install-db:
+	@if [ ! -d $(VENV) ]; then uv venv $(VENV); fi
+	$(PYTHON) -c "from app.db import reset_db; reset_db()"
 
 serve:
 	$(UVICORN) $(APP) --reload --host $(HOST) --port $(PORT)

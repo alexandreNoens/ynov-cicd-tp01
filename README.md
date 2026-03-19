@@ -10,7 +10,15 @@ make install
 
 Crée l'environnement virtuel si besoin, génère le lock des dépendances avec hashes, puis installe les dépendances.
 
-### 2) Lancer l'application
+### 2) Initialiser la base de données (reset)
+
+```bash
+make install-db
+```
+
+Supprime et recrée la base SQLite, puis charge le schéma et les données de dev.
+
+### 3) Lancer l'application
 
 ```bash
 make serve
@@ -18,7 +26,7 @@ make serve
 
 Lance l'API FastAPI en local avec rechargement automatique.
 
-### 3) Lancer les tests
+### 4) Lancer les tests
 
 ```bash
 make check
@@ -26,7 +34,7 @@ make check
 
 Exécute les tests avec `pytest`.
 
-### 4) Lancer le linter
+### 5) Lancer le linter
 
 ```bash
 make lint
