@@ -55,3 +55,13 @@ make lint
 ```
 
 Exécute le lint avec ruff.
+
+## Cycle Red → Green (CI)
+
+### Pipeline rouge (bug intentionnel)
+
+![Pipeline rouge](screenshots/ci-red.png)
+
+### Pipeline vert (bug corrigé)
+
+![Pipeline vert](screenshots/ci-green.png)
