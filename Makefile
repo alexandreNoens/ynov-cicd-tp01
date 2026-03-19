@@ -4,7 +4,7 @@ VENV ?= .venv
 PYTHON ?= $(VENV)/bin/python
 UVICORN ?= $(VENV)/bin/uvicorn
 PYTEST ?= $(VENV)/bin/pytest
-PYTEST_ARGS ?= -vv -ra
+PYTEST_ARGS ?= -vv -ra --cov=app --cov-report=term-missing --cov-fail-under=90
 RUFF ?= $(VENV)/bin/ruff
 APP ?= app.main:app
 HOST ?= 0.0.0.0

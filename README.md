@@ -48,7 +48,7 @@ Lance l'API FastAPI en local avec rechargement automatique.
 make check
 ```
 
-Exécute les tests avec pytest.
+Exécute les tests avec pytest et affiche la couverture de code.
 
 ### Lancer le linter
 
