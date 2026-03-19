@@ -1,0 +1,30 @@
+.PHONY: install serve check lint clean
+
+VENV ?= .venv
+PYTHON ?= $(VENV)/bin/python
+UVICORN ?= $(VENV)/bin/uvicorn
+PYTEST ?= $(VENV)/bin/pytest
+RUFF ?= $(VENV)/bin/ruff
+APP ?= app.main:app
+HOST ?= 0.0.0.0
+PORT ?= 8000
+REQ_DIR ?= requirements
+REQ_IN ?= $(REQ_DIR)/requirements.in
+REQ_LOCK ?= $(REQ_DIR)/requirements.lock
+
+install:
+	@if [ ! -d $(VENV) ]; then uv venv $(VENV); fi
+	uv pip compile $(REQ_IN) --generate-hashes -o $(REQ_LOCK)
+	uv pip install --python $(PYTHON) -r $(REQ_LOCK)
+
+serve:
+	$(UVICORN) $(APP) --reload --host $(HOST) --port $(PORT)
+
+check:
+	$(PYTEST) -q
+
+lint:
+	$(RUFF) check .
+
+clean:
+	rm -rf $(VENV) .pytest_cache .ruff_cache $(REQ_LOCK)
