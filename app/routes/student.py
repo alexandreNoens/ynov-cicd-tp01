@@ -37,7 +37,7 @@ def get_students_search(q: str | None = Query(default=None)) -> list[Student]:
     return search_students(q)
 
 
-@router.post("/students", response_model=Student, status_code=200)
+@router.post("/students", response_model=Student, status_code=201)
 def post_student(payload: dict[str, Any]) -> Student:
     try:
         student_to_create = StudentCreate(**payload)
