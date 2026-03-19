@@ -23,8 +23,11 @@ router = APIRouter(tags=["students"])
 
 
 @router.get("/students", response_model=list[Student])
-def get_students() -> list[Student]:
-    return list_students()
+def get_students(
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=10, ge=1),
+) -> list[Student]:
+    return list_students(page=page, limit=limit)
 
 
 @router.get("/students/search", response_model=list[Student])

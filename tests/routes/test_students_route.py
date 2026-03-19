@@ -55,6 +55,30 @@ def test_get_students_returns_json_array_with_status_200(
     ]
 
 
+def test_get_students_pagination_returns_first_page(
+    client: TestClient,
+) -> None:
+    response = client.get("/students?page=1&limit=2")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert len(payload) == 2
+    assert payload[0]["id"] == 1
+    assert payload[1]["id"] == 2
+
+
+def test_get_students_pagination_returns_second_page(
+    client: TestClient,
+) -> None:
+    response = client.get("/students?page=2&limit=2")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert len(payload) == 2
+    assert payload[0]["id"] == 3
+    assert payload[1]["id"] == 4
+
+
 def test_get_students_search_returns_200_with_case_insensitive_matches(
     client: TestClient,
 ) -> None:

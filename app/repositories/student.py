@@ -8,15 +8,17 @@ from app.exceptions.student import (
 from app.models.student import Student, StudentCreate
 
 
-def list_students() -> list[Student]:
+def list_students(page: int = 1, limit: int = 10) -> list[Student]:
+    offset = (page - 1) * limit
     query = """
     SELECT id, firstName, lastName, email, grade, field
     FROM students
     ORDER BY id ASC
+    LIMIT ? OFFSET ?
     """
     with get_connection() as connection:
         connection.row_factory = sqlite3.Row
-        rows = connection.execute(query).fetchall()
+        rows = connection.execute(query, (limit, offset)).fetchall()
 
     return [Student(**dict(row)) for row in rows]
 
