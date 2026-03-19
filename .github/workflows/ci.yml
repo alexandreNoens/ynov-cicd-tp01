@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test-and-lint:
+  setup:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,8 +28,67 @@ jobs:
       - name: Install
         run: make install
 
+      - name: Upload venv artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: venv-py${{ matrix.python-version }}
+          path: .venv
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download venv artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: venv-py${{ matrix.python-version }}
+          path: .venv
+
+      - name: Restore venv binary permissions
+        run: chmod -R u+x .venv/bin
+
       - name: Lint
         run: make lint
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download venv artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: venv-py${{ matrix.python-version }}
+          path: .venv
+
+      - name: Restore venv binary permissions
+        run: chmod -R u+x .venv/bin
 
       - name: Test
         run: make check
