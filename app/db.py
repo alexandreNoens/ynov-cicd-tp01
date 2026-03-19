@@ -7,8 +7,12 @@ SCHEMA_PATH = ROOT_DIR / "sql" / "provisioning.sql"
 DEV_DATA_PATH = ROOT_DIR / "sql" / "dev-data.sql"
 
 
+def get_connection() -> sqlite3.Connection:
+    return sqlite3.connect(DB_PATH)
+
+
 def init_db() -> None:
-    with sqlite3.connect(DB_PATH) as connection:
+    with get_connection() as connection:
         schema = SCHEMA_PATH.read_text(encoding="utf-8")
         connection.executescript(schema)
 
@@ -17,7 +21,7 @@ def reset_db() -> None:
     if DB_PATH.exists():
         DB_PATH.unlink()
 
-    with sqlite3.connect(DB_PATH) as connection:
+    with get_connection() as connection:
         schema = SCHEMA_PATH.read_text(encoding="utf-8")
         dev_data = DEV_DATA_PATH.read_text(encoding="utf-8")
         connection.executescript(schema)
