@@ -360,3 +360,12 @@ def test_delete_student_returns_404_when_id_does_not_exist(
 
     assert response.status_code == 404
     assert response.json() == {"detail": "student not found"}
+
+
+def test_delete_student_returns_400_when_id_is_not_a_valid_number(
+    client: TestClient,
+) -> None:
+    response = client.delete("/students/not-a-number")
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "student id must be a valid number"}

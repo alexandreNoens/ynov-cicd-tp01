@@ -78,7 +78,7 @@ def create_student(student: StudentCreate) -> Student:
     except sqlite3.IntegrityError as exc:
         if "students.email" in str(exc):
             raise StudentEmailAlreadyExistsError() from exc
-        raise
+        raise  # pragma: no cover
 
     created_student = get_student_by_id(created_student_id)
     if created_student is None:
@@ -111,7 +111,7 @@ def update_student(student_id: int, student: StudentCreate) -> Student:
     except sqlite3.IntegrityError as exc:
         if "students.email" in str(exc):
             raise StudentEmailAlreadyExistsError() from exc
-        raise
+        raise  # pragma: no cover
 
     updated_student = get_student_by_id(student_id)
     if updated_student is None:

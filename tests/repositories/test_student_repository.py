@@ -2,6 +2,7 @@ from collections.abc import Callable
 
 import pytest
 
+from app.db import get_connection
 from app.exceptions.student import (
     StudentEmailAlreadyExistsError,
     StudentNotFoundError,
@@ -148,3 +149,46 @@ def test_search_students_returns_empty_list_when_no_match() -> None:
     students = search_students("xyz")
 
     assert students == []
+
+
+def test_get_students_stats_returns_empty_values_when_no_student() -> None:
+    with get_connection() as connection:
+        connection.execute("DELETE FROM students")
+
+    stats = get_students_stats()
+
+    assert stats["totalStudents"] == 0
+    assert stats["averageGrade"] == 0.0
+    assert stats["studentsByField"] == {
+        "informatique": 0,
+        "mathématiques": 0,
+        "physique": 0,
+        "chimie": 0,
+    }
+    assert stats["bestStudent"] is None
+
+
+def test_create_student_raises_runtime_error_when_created_student_not_found(
+    monkeypatch: pytest.MonkeyPatch,
+    student_create_factory: Callable[..., StudentCreate],
+) -> None:
+    monkeypatch.setattr(
+        "app.repositories.student.get_student_by_id",
+        lambda _student_id: None,
+    )
+
+    with pytest.raises(RuntimeError):
+        create_student(student_create_factory())
+
+
+def test_update_student_raises_runtime_error_when_updated_student_not_found(
+    monkeypatch: pytest.MonkeyPatch,
+    student_create_factory: Callable[..., StudentCreate],
+) -> None:
+    monkeypatch.setattr(
+        "app.repositories.student.get_student_by_id",
+        lambda _student_id: None,
+    )
+
+    with pytest.raises(RuntimeError):
+        update_student(1, student_create_factory())
