@@ -4,6 +4,7 @@ VENV ?= .venv
 PYTHON ?= $(VENV)/bin/python
 UVICORN ?= $(VENV)/bin/uvicorn
 PYTEST ?= $(VENV)/bin/pytest
+PYTEST_ARGS ?= -vv -ra
 RUFF ?= $(VENV)/bin/ruff
 APP ?= app.main:app
 HOST ?= 0.0.0.0
@@ -25,7 +26,7 @@ serve:
 	$(UVICORN) $(APP) --reload --host $(HOST) --port $(PORT)
 
 check:
-	$(PYTEST) -q
+	$(PYTEST) $(PYTEST_ARGS)
 
 lint:
 	$(RUFF) check .
