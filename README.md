@@ -1,5 +1,10 @@
 # ynov-cicd-tp01
 
+## Prérequis
+
+- Python 3.11+
+- `uv`
+
 ## Étapes
 
 ### 1) Installation du projet
