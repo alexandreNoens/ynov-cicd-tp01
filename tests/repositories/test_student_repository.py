@@ -8,6 +8,7 @@ from app.repositories.student import (
     create_student,
     delete_student,
     get_student_by_id,
+    get_students_stats,
     list_students,
     update_student,
 )
@@ -113,3 +114,20 @@ def test_delete_student_removes_student_when_found() -> None:
 def test_delete_student_raises_not_found_when_student_does_not_exist() -> None:
     with pytest.raises(StudentNotFoundError):
         delete_student(999)
+
+
+def test_get_students_stats_returns_expected_aggregates() -> None:
+    stats = get_students_stats()
+
+    assert stats["totalStudents"] == 5
+    assert stats["averageGrade"] == 16.26
+    assert stats["studentsByField"] == {
+        "informatique": 2,
+        "mathématiques": 1,
+        "physique": 1,
+        "chimie": 1,
+    }
+    best_student = stats["bestStudent"]
+    assert isinstance(best_student, Student)
+    assert best_student.firstName == "Hermione"
+    assert best_student.grade == 19.8

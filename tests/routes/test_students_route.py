@@ -13,6 +13,23 @@ def test_get_students_returns_json_array_with_status_200(client: TestClient) -> 
     assert payload[0]["firstName"] == "Harry"
 
 
+def test_get_students_stats_returns_200_and_expected_stats(client: TestClient) -> None:
+    response = client.get("/students/stats")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["totalStudents"] == 5
+    assert payload["averageGrade"] == 16.26
+    assert payload["studentsByField"] == {
+        "informatique": 2,
+        "mathématiques": 1,
+        "physique": 1,
+        "chimie": 1,
+    }
+    assert payload["bestStudent"]["firstName"] == "Hermione"
+    assert payload["bestStudent"]["grade"] == 19.8
+
+
 def test_get_student_returns_json_object_with_status_200_when_found(
     client: TestClient,
 ) -> None:

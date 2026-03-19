@@ -10,6 +10,7 @@ from app.repositories.student import (
     create_student,
     delete_student,
     get_student_by_id,
+    get_students_stats,
     list_students,
     update_student,
 )
@@ -62,6 +63,11 @@ def put_student(student_id: str, payload: dict[str, Any]) -> Student:
             status_code=409,
             detail="student email already exists",
         ) from exc
+
+
+@router.get("/students/stats")
+def get_students_stats_route() -> dict[str, object]:
+    return get_students_stats()
 
 
 @router.get("/students/{student_id}", response_model=Student)

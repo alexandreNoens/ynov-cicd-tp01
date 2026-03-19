@@ -106,3 +106,55 @@ def delete_student(student_id: int) -> None:
         cursor = connection.execute(query, (student_id,))
         if cursor.rowcount == 0:
             raise StudentNotFoundError()
+
+
+def get_students_stats() -> dict[str, object]:
+    with get_connection() as connection:
+        connection.row_factory = sqlite3.Row
+
+        total_and_average_row = connection.execute(
+            "SELECT COUNT(*) AS total, AVG(grade) AS average FROM students"
+        ).fetchone()
+
+        fields_rows = connection.execute(
+            "SELECT field, COUNT(*) AS total FROM students GROUP BY field"
+        ).fetchall()
+
+        best_student_row = connection.execute(
+            """
+            SELECT id, firstName, lastName, email, grade, field
+            FROM students
+            ORDER BY grade DESC, id ASC
+            LIMIT 1
+            """
+        ).fetchone()
+
+    total_students = int(total_and_average_row["total"])
+    average_grade_value = total_and_average_row["average"]
+    average_grade = (
+        round(float(average_grade_value), 2)
+        if average_grade_value is not None
+        else 0.0
+    )
+
+    students_by_field = {
+        "informatique": 0,
+        "mathématiques": 0,
+        "physique": 0,
+        "chimie": 0,
+    }
+    for row in fields_rows:
+        students_by_field[row["field"]] = int(row["total"])
+
+    best_student = (
+        Student(**dict(best_student_row))
+        if best_student_row is not None
+        else None
+    )
+
+    return {
+        "totalStudents": total_students,
+        "averageGrade": average_grade,
+        "studentsByField": students_by_field,
+        "bestStudent": best_student,
+    }
