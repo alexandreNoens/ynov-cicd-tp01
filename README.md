@@ -39,10 +39,8 @@ Lance l'API FastAPI en local avec rechargement automatique.
 
 - Swagger UI : http://127.0.0.1:8000/docs (référence principale)
 - ReDoc : http://127.0.0.1:8000/redoc
-- Version statique en ligne (GitHub Pages) :
-	- https://alexandrenoens.github.io/ynov-cicd-tp01/
-	- https://alexandrenoens.github.io/ynov-cicd-tp01/swagger.html
-	- https://alexandrenoens.github.io/ynov-cicd-tp01/redoc.html
+- **Documentation statique en ligne (GitHub Pages)** :
+  - https://alexandrenoens.github.io/ynov-cicd-tp01/
 
 ### Exemples rapides
 
