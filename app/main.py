@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db import init_db
+from app.routes.student import router as student_router
 
 
 @asynccontextmanager
@@ -13,6 +14,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="ynov-cicd-tp01", lifespan=lifespan)
+app.include_router(student_router)
 
 
 @app.get("/health")
