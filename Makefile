@@ -28,3 +28,6 @@ lint:
 
 clean:
 	rm -rf $(VENV) .pytest_cache .ruff_cache $(REQ_LOCK)
+
+format:
+	$(RUFF) format .
