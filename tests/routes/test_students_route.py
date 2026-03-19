@@ -9,8 +9,48 @@ def test_get_students_returns_json_array_with_status_200(client: TestClient) -> 
     assert response.status_code == 200
     payload = response.json()
     assert isinstance(payload, list)
-    assert len(payload) == 5
-    assert payload[0]["firstName"] == "Harry"
+    assert payload == [
+        {
+            "id": 1,
+            "firstName": "Harry",
+            "lastName": "Potter",
+            "email": "harry.potter@hogwarts.edu",
+            "grade": 17.5,
+            "field": "informatique",
+        },
+        {
+            "id": 2,
+            "firstName": "Hermione",
+            "lastName": "Granger",
+            "email": "hermione.granger@hogwarts.edu",
+            "grade": 19.8,
+            "field": "mathématiques",
+        },
+        {
+            "id": 3,
+            "firstName": "Ron",
+            "lastName": "Weasley",
+            "email": "ron.weasley@hogwarts.edu",
+            "grade": 14.2,
+            "field": "chimie",
+        },
+        {
+            "id": 4,
+            "firstName": "Luna",
+            "lastName": "Lovegood",
+            "email": "luna.lovegood@hogwarts.edu",
+            "grade": 16.1,
+            "field": "physique",
+        },
+        {
+            "id": 5,
+            "firstName": "Draco",
+            "lastName": "Malfoy",
+            "email": "draco.malfoy@hogwarts.edu",
+            "grade": 13.7,
+            "field": "informatique",
+        },
+    ]
 
 
 def test_get_students_search_returns_200_with_case_insensitive_matches(
