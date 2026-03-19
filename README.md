@@ -1,4 +1,6 @@
-# ynov-cicd-tp01
+# API REST + Pipeline CI/CD
+
+Créez une API REST, écrivez des tests, configurez un linter et mettez en place un pipeline d'intégration continue.
 
 ## Prérequis
 
