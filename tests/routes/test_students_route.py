@@ -203,3 +203,21 @@ def test_put_student_returns_409_when_email_already_exists(
 
     assert response.status_code == 409
     assert response.json() == {"detail": "student email already exists"}
+
+
+def test_delete_student_returns_200_with_confirmation_message(
+    client: TestClient,
+) -> None:
+    response = client.delete("/students/1")
+
+    assert response.status_code == 200
+    assert response.json() == {"message": "student deleted"}
+
+
+def test_delete_student_returns_404_when_id_does_not_exist(
+    client: TestClient,
+) -> None:
+    response = client.delete("/students/999")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "student not found"}

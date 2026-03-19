@@ -6,6 +6,7 @@ from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFou
 from app.models.student import Student, StudentCreate
 from app.repositories.student import (
     create_student,
+    delete_student,
     get_student_by_id,
     list_students,
     update_student,
@@ -99,3 +100,16 @@ def test_update_student_raises_email_conflict_when_email_belongs_to_another(
             1,
             student_create_factory(email="hermione.granger@hogwarts.edu"),
         )
+
+
+def test_delete_student_removes_student_when_found() -> None:
+    delete_student(1)
+
+    student = get_student_by_id(1)
+
+    assert student is None
+
+
+def test_delete_student_raises_not_found_when_student_does_not_exist() -> None:
+    with pytest.raises(StudentNotFoundError):
+        delete_student(999)

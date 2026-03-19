@@ -8,6 +8,7 @@ from app.exceptions.student import StudentEmailAlreadyExistsError, StudentNotFou
 from app.models.student import Student, StudentCreate
 from app.repositories.student import (
     create_student,
+    delete_student,
     get_student_by_id,
     list_students,
     update_student,
@@ -78,3 +79,21 @@ def get_student(student_id: str) -> Student:
         raise HTTPException(status_code=404, detail="student not found")
 
     return student
+
+
+@router.delete("/students/{student_id}")
+def delete_student_by_id(student_id: str) -> dict[str, str]:
+    try:
+        parsed_student_id = int(student_id)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail="student id must be a valid number",
+        ) from exc
+
+    try:
+        delete_student(parsed_student_id)
+    except StudentNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="student not found") from exc
+
+    return {"message": "student deleted"}

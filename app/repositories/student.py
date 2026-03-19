@@ -95,3 +95,14 @@ def update_student(student_id: int, student: StudentCreate) -> Student:
         raise RuntimeError("updated student could not be retrieved")
 
     return updated_student
+
+
+def delete_student(student_id: int) -> None:
+    query = """
+    DELETE FROM students
+    WHERE id = ?
+    """
+    with get_connection() as connection:
+        cursor = connection.execute(query, (student_id,))
+        if cursor.rowcount == 0:
+            raise StudentNotFoundError()
